@@ -1,0 +1,43 @@
+[gd_resource type="VisualShader" load_steps=2 format=2]
+
+[sub_resource type="VisualShaderNodeCubeMap" id=1]
+
+[resource]
+code = "shader_type spatial;
+render_mode specular_schlick_ggx, unshaded, shadows_disabled;
+
+uniform samplerCube cube_frg_2;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// CubeMap:2
+	vec3 n_out2p0;
+	float n_out2p1;
+	{
+		vec4 cube_frg_2_read = texture(cube_frg_2 , vec3(UV, 0.0));
+		n_out2p0 = cube_frg_2_read.rgb;
+		n_out2p1 = cube_frg_2_read.a;
+	}
+
+// Output:0
+	ALBEDO = n_out2p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -462, 116 )
+flags/shadows_disabled = true
+flags/unshaded = true
+nodes/fragment/2/node = SubResource( 1 )
+nodes/fragment/2/position = Vector2( -100, 140 )
+nodes/fragment/connections = PoolIntArray( 2, 0, 0, 0 )

@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://addons/ocean/Shaders/Water.tres" type="Shader" id=1]
+
+[resource]
+shader = ExtResource( 1 )
+shader_param/VertexNoiseScale = 0.5
+shader_param/WaterLow = Color( 0, 0.227451, 1, 1 )
+shader_param/WaterHigh = Color( 0, 0.623529, 1, 1 )
+shader_param/AlbedoNoiseScale = 0.5
