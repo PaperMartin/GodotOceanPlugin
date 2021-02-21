@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/ocean/scripts/WaterBody.gd" type="Script" id=1]
+
+[node name="WaterBody" type="Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00192106, 1.78814e-07, 0.00286436 )
+script = ExtResource( 1 )
+HorizontalSubdivision = 10
+VerticalSubdivision = 10
+QuadSize = Vector2( 2, 2 )

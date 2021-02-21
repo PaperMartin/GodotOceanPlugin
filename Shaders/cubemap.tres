@@ -35,7 +35,6 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -462, 116 )
 flags/shadows_disabled = true
 flags/unshaded = true
 nodes/fragment/2/node = SubResource( 1 )
