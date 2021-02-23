@@ -1,9 +1,8 @@
 extends Resource
 
-
-export var direction : float
-export var steepness : float
-export var wavelength : float
+export (float) var WaveLength;
+export (float,1) var Steepness;
+export var Direction : Vector2;
 
 signal on_value_update
 
