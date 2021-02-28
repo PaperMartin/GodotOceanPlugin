@@ -1,8 +1,0 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=2]
-
-[ext_resource path="res://Shaders/cubemap.tres" type="Shader" id=1]
-[ext_resource path="res://Textures/Cubemaps/Space/Space.tres" type="CubeMap" id=2]
-
-[resource]
-shader = ExtResource( 1 )
-shader_param/cube_frg_2 = ExtResource( 2 )
