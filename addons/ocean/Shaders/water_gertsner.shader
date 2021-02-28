@@ -12,40 +12,47 @@ uniform vec4 Wave3;
 uniform vec4 Wave4;
 const float pi = 3.14159265359;
 
-varying float k;
-varying float c;
-varying vec2 d;
-varying float f;
-varying float a;
 varying vec3 pos;
 
-vec3 CalculateNormals(){
-	vec3 tangent = vec3(
-		1.0 - d.x * d.x * (Wave1.y * sin(f)),
-		d.x * (Wave1.y * cos(f)),
-		-d.x * d.y * (Wave1.y * sin(f))
+vec3 GertsnerWave(vec4 Wave, vec3 p, float time, inout vec3 tangent, inout vec3 binormal){
+	float steepness = Wave.y;
+	float wavelength = Wave.x;
+	float k = 2.0 * pi / wavelength;
+	float c = sqrt(9.8 / k);
+	vec2 d = normalize(Wave.zw);
+	float f = k * (dot(d,p.xz) - c * time);
+	float a = steepness/k;
+	
+	tangent += vec3(
+		-d.x * d.x * (steepness * sin(f)),
+		d.x * (steepness * cos(f)),
+		-d.x * d.y * (steepness * sin(f))
 	);
-	vec3 binormal = vec3(
-		-d.x * d.y * (Wave1.y * sin(f)),
-		d.y* (Wave1.y * cos(f)),
-		1.0 - d.y * d.y * (Wave1.y * sin(f))
+	
+	binormal += vec3(
+		-d.x * d.y * (steepness * sin(f)),
+		d.y * (steepness * cos(f)),
+		-d.y * d.y * (steepness * sin(f))
 	);
-	vec3 finalnormal = normalize(cross(binormal,tangent));
-	return finalnormal;
+	
+	return vec3(
+		d.x * (a * cos(f)),
+		a * sin(f),
+		d.y * (a * cos(f))
+	);
 }
 
 void vertex(){
 	pos = VERTEX;
+	vec3 gridPoint = VERTEX;
+	vec3 tangent = vec3(1,0,0);
+	vec3 binormal = vec3(0,0,1);
+	vec3 p = gridPoint;
+	p += GertsnerWave(Wave1,gridPoint,TIME,tangent,binormal);
+	p += GertsnerWave(Wave2,gridPoint,TIME,tangent,binormal);
 	
-	k = 2.0 * pi / Wave1.x;
-	c = sqrt(9.8/k);
-	d = normalize(vec2 (Wave1.z,Wave1.w));
-	f = k * (dot(d,vec2(VERTEX.x,VERTEX.z) - c * TIME));
-	a = Wave1.y / k;
-	VERTEX.x += d.x * (a * cos(f));
-	VERTEX.y = a * sin(f);
-	VERTEX.z += d.y * (a * cos(f));
-	NORMAL = CalculateNormals();
+	NORMAL = normalize(cross(binormal,tangent));
+	VERTEX = p;
 }
 
 void fragment(){
