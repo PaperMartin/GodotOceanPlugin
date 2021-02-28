@@ -50,7 +50,8 @@ void vertex(){
 	vec3 p = gridPoint;
 	p += GertsnerWave(Wave1,gridPoint,TIME,tangent,binormal);
 	p += GertsnerWave(Wave2,gridPoint,TIME,tangent,binormal);
-	
+	//p += GertsnerWave(Wave3,gridPoint,TIME,tangent,binormal);
+	//p += GertsnerWave(Wave4,gridPoint,TIME,tangent,binormal);
 	NORMAL = normalize(cross(binormal,tangent));
 	VERTEX = p;
 }

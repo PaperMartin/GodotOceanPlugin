@@ -1,12 +1,12 @@
 tool
 extends Spatial
 
-export var HorizontalSubdivision : int = 5 setget _horizontalsubdivisionupdate
-export var VerticalSubdivision : int = 5 setget _verticalsubdivisionupdate
-export var QuadSize : Vector2 setget _setquadsize
-export (Resource) var Wave1 setget _update_wave1
-export (Resource) var Wave2 setget _update_wave2
-export var WaterMaterial : ShaderMaterial setget _set_material
+export var HorizontalSubdivision : int = 49 setget _horizontalsubdivisionupdate
+export var VerticalSubdivision : int = 49 setget _verticalsubdivisionupdate
+export var QuadSize : Vector2 = Vector2(10,10) setget _setquadsize
+export (Resource) var Wave1 = preload("res://addons/ocean/example/WaveSettings/Wave1.tres") setget _update_wave1
+export (Resource) var Wave2 = preload("res://addons/ocean/example/WaveSettings/Wave2.tres") setget _update_wave2
+export var WaterMaterial : ShaderMaterial = preload("res://addons/ocean/Materials/water_gertsner_default.tres") setget _set_material
 
 var _waterMesh : MeshInstance
 
@@ -64,6 +64,8 @@ func _initialize_water_mesh():
 	_waterMesh.set_size(QuadSize)
 	if Wave1 != null:
 		_waterMesh.set_wave1(Wave1)
+	if Wave2 != null:
+		_waterMesh.set_wave2(Wave2)
 	if WaterMaterial != null:
 		_waterMesh.set_watermaterial(WaterMaterial)
 
