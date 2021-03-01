@@ -6,6 +6,8 @@ export var VerticalSubdivision : int = 49 setget _verticalsubdivisionupdate
 export var QuadSize : Vector2 = Vector2(10,10) setget _setquadsize
 export (Resource) var Wave1 = preload("res://addons/ocean/example/WaveSettings/Wave1.tres") setget _update_wave1
 export (Resource) var Wave2 = preload("res://addons/ocean/example/WaveSettings/Wave2.tres") setget _update_wave2
+export (Resource) var Wave3 = preload("res://addons/ocean/example/WaveSettings/Wave3.tres") setget _update_wave3
+export (Resource) var Wave4 = preload("res://addons/ocean/example/WaveSettings/Wave4.tres") setget _update_wave4
 export var WaterMaterial : ShaderMaterial = preload("res://addons/ocean/Materials/water_gertsner_default.tres") setget _set_material
 
 var _waterMesh : MeshInstance
@@ -27,6 +29,14 @@ func _update_wave1(Wave):
 func _update_wave2(Wave):
 	_get_water_mesh().set_wave2(Wave)
 	Wave2 = Wave
+
+func _update_wave3(Wave):
+	_get_water_mesh().set_wave3(Wave)
+	Wave3 = Wave
+
+func _update_wave4(Wave):
+	_get_water_mesh().set_wave4(Wave)
+	Wave4= Wave
 
 func _process(delta):
 	if Engine.editor_hint:
@@ -66,6 +76,10 @@ func _initialize_water_mesh():
 		_waterMesh.set_wave1(Wave1)
 	if Wave2 != null:
 		_waterMesh.set_wave2(Wave2)
+	if Wave3 != null:
+		_waterMesh.set_wave3(Wave3)
+	if Wave4 != null:
+		_waterMesh.set_wave4(Wave4)
 	if WaterMaterial != null:
 		_waterMesh.set_watermaterial(WaterMaterial)
 

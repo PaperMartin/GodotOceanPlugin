@@ -78,6 +78,7 @@ func set_wave1(var wave):
 	_update_material()
 
 func set_wave2(var wave):
+	print_debug("wave 2 updated")
 	if Wave2 != null:
 		Wave2.disconnect("changed", self, "_update_material")
 	if wave != null:
@@ -86,20 +87,35 @@ func set_wave2(var wave):
 	_update_material()
 
 func set_wave3(var wave):
-	Wave3 = wave
+	print_debug("wave 3 updated")
+	if Wave3 != null:
+		Wave3.disconnect("changed", self, "_update_material")
+	if wave != null:
+		Wave3 = wave
+		Wave3.connect("changed",self, "_update_material")
 	_update_material()
 
 func set_wave4(var wave):
-	Wave4 = wave
+	print_debug("wave 4 updated")
+	if Wave4 != null:
+		Wave4.disconnect("changed", self, "_update_material")
+	if wave != null:
+		Wave4 = wave
+		Wave4.connect("changed",self, "_update_material")
 	_update_material()
 
 func _update_material():
 	if WaterMat != null:
+		print_debug("Updating Material")
 		material_override = WaterMat.duplicate()
 		if Wave1 != null:
 			material_override.set_shader_param("Wave1", _get_wave_as_plane(Wave1))
 		if Wave2 != null:
 			material_override.set_shader_param("Wave2", _get_wave_as_plane(Wave2))
+		if Wave3 != null:
+			material_override.set_shader_param("Wave3", _get_wave_as_plane(Wave3))
+		if Wave4 != null:
+			material_override.set_shader_param("Wave4", _get_wave_as_plane(Wave4))
 
 func _get_wave_as_plane(var wave):
 	var plane : Plane = Plane(wave.WaveLength,wave.Steepness,wave.Direction.x,wave.Direction.y)

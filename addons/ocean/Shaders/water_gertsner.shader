@@ -1,6 +1,6 @@
 shader_type spatial;
 //render_mode unshaded;
-render_mode depth_draw_alpha_prepass,blend_mix,world_vertex_coords,cull_back,diffuse_burley,specular_schlick_ggx;
+render_mode depth_draw_alpha_prepass,blend_mix,world_vertex_coords;
 uniform vec4 color : hint_color;
 uniform float Metallic : hint_range(0,1);
 uniform float Roughness : hint_range(0,1);
@@ -50,8 +50,8 @@ void vertex(){
 	vec3 p = gridPoint;
 	p += GertsnerWave(Wave1,gridPoint,TIME,tangent,binormal);
 	p += GertsnerWave(Wave2,gridPoint,TIME,tangent,binormal);
-	//p += GertsnerWave(Wave3,gridPoint,TIME,tangent,binormal);
-	//p += GertsnerWave(Wave4,gridPoint,TIME,tangent,binormal);
+	p += GertsnerWave(Wave3,gridPoint,TIME,tangent,binormal);
+	p += GertsnerWave(Wave4,gridPoint,TIME,tangent,binormal);
 	NORMAL = normalize(cross(binormal,tangent));
 	VERTEX = p;
 }

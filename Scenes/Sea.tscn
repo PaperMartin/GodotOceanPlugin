@@ -38,3 +38,6 @@ data = SubResource( 3 )
 
 [node name="WaterBody" type="Spatial" parent="."]
 script = ExtResource( 3 )
+HorizontalSubdivision = 99
+VerticalSubdivision = 99
+QuadSize = Vector2( 20, 20 )
