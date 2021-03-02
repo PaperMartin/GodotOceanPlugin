@@ -1,11 +1,15 @@
 shader_type spatial;
 //render_mode unshaded;
-render_mode depth_draw_alpha_prepass,blend_mix,world_vertex_coords;
+render_mode depth_draw_alpha_prepass,blend_mix,world_vertex_coords, diffuse_burley, specular_schlick_ggx;
 uniform vec4 color : hint_color;
 uniform float Metallic : hint_range(0,1);
 uniform float Roughness : hint_range(0,1);
-uniform sampler2D WaveNormals;
-uniform float NormalScale = 1;
+uniform sampler2D NormalsA : hint_normal;
+uniform float NormalsAScale = 1;
+uniform sampler2D NormalsB : hint_normal;
+uniform float NormalsBScale = 0.5;
+uniform float NormalSpeed = 1;
+uniform float NormalsDepth = 0.2;
 uniform vec4 Wave1;
 uniform vec4 Wave2;
 uniform vec4 Wave3;
@@ -61,6 +65,10 @@ void fragment(){
 	ROUGHNESS = Roughness;
 	ALBEDO = color.xyz;
 	ALPHA = color.a;
-	NORMALMAP = texture(WaveNormals,vec2(pos.x,pos.z)).xyz;
-	NORMALMAP_DEPTH = NormalScale;
+	vec3 normal1 = texture(NormalsA,(vec2(pos.x,pos.z) * NormalsAScale) + TIME * NormalSpeed).xyz * 2.0 - 1.0;
+	vec3 normal2 = texture(NormalsB,(vec2(pos.x,pos.z) * NormalsBScale) - TIME * NormalSpeed).xyz * 2.0 - 1.0;
+	vec2 pd = normal1.xy/normal1.z + normal2.xy/normal2.z;
+	vec3 r = normalize(vec3(pd,1));
+	NORMALMAP = r * 0.5 + 0.5;
+	NORMALMAP_DEPTH = NormalsDepth;
 }

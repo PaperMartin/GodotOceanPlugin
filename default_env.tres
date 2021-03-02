@@ -5,6 +5,7 @@
 [resource]
 background_mode = 2
 background_sky = SubResource( 1 )
+ss_reflections_max_steps = 256
 ss_reflections_fade_out = 0.00158643
 ssao_enabled = true
 ssao_bias = 0.25
