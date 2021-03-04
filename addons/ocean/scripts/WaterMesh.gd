@@ -78,7 +78,6 @@ func set_wave1(var wave):
 	_update_material()
 
 func set_wave2(var wave):
-	print_debug("wave 2 updated")
 	if Wave2 != null:
 		Wave2.disconnect("changed", self, "_update_material")
 	if wave != null:
@@ -87,7 +86,6 @@ func set_wave2(var wave):
 	_update_material()
 
 func set_wave3(var wave):
-	print_debug("wave 3 updated")
 	if Wave3 != null:
 		Wave3.disconnect("changed", self, "_update_material")
 	if wave != null:
@@ -96,7 +94,6 @@ func set_wave3(var wave):
 	_update_material()
 
 func set_wave4(var wave):
-	print_debug("wave 4 updated")
 	if Wave4 != null:
 		Wave4.disconnect("changed", self, "_update_material")
 	if wave != null:
@@ -106,7 +103,6 @@ func set_wave4(var wave):
 
 func _update_material():
 	if WaterMat != null:
-		print_debug("Updating Material")
 		material_override = WaterMat.duplicate()
 		if Wave1 != null:
 			material_override.set_shader_param("Wave1", _get_wave_as_plane(Wave1))

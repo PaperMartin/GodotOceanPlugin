@@ -5,13 +5,13 @@
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/color = Color( 0.258824, 0.388235, 0.478431, 1 )
-shader_param/Metallic = 0.9
-shader_param/Roughness = 0.0
+shader_param/WaveColor = Color( 0.227451, 0.368627, 0.419608, 1 )
+shader_param/Metallic = 0.0
+shader_param/Roughness = 1.0
 shader_param/NormalsAScale = 0.5
 shader_param/NormalsBScale = 1.0
 shader_param/NormalSpeed = 0.25
-shader_param/NormalsDepth = 0.4
+shader_param/NormalsDepth = 0.1
 shader_param/Wave1 = Plane( 5, 0.5, 1, 1 )
 shader_param/Wave2 = Plane( 2, 0.25, 0, 1 )
 shader_param/Wave3 = Plane( 1, 0.125, 1, 0 )

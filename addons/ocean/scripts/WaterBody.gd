@@ -19,7 +19,7 @@ func _ready():
 	pass
 
 func InitializeWaterBody():
-	print_debug(_get_water_mesh())
+	_get_water_mesh()
 	pass
 
 func _update_wave1(Wave):
@@ -66,7 +66,7 @@ func _initialize_water_mesh():
 	_waterMesh.set_script(preload("res://addons/ocean/scripts/WaterMesh.gd"))
 	_waterMesh.name = "WaterMesh"
 	add_child(_waterMesh)
-	#_waterMesh.owner = self
+	_waterMesh.owner = self
 	_waterMesh.translation = Vector3.ZERO
 	_waterMesh.initialize_mesh()
 	_waterMesh.set_verticalsubdiv(VerticalSubdivision)
