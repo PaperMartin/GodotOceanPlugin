@@ -1,15 +1,17 @@
 shader_type spatial;
 //render_mode unshaded;
-render_mode depth_draw_alpha_prepass,blend_mix,world_vertex_coords, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix,world_vertex_coords, diffuse_lambert, specular_schlick_ggx;
 uniform vec4 WaveColor : hint_color;
 uniform float Metallic : hint_range(0,1);
 uniform float Roughness : hint_range(0,1);
+uniform sampler2D FoamTexture;
 uniform sampler2D NormalsA : hint_normal;
 uniform float NormalsAScale = 1;
 uniform sampler2D NormalsB : hint_normal;
 uniform float NormalsBScale = 0.5;
 uniform float NormalSpeed = 1;
 uniform float NormalsDepth = 0.2;
+uniform float ProximityFadeDistance = 0.2;
 uniform vec4 Wave1;
 uniform vec4 Wave2;
 uniform vec4 Wave3;
@@ -21,6 +23,10 @@ varying float WaveMask;
 
 float remap(float value, float InputA, float InputB, float OutputA, float OutputB){
     return(value - InputA) / (InputB - InputA) * (OutputB - OutputA) + OutputA;
+}
+
+float depth_fade(float distance){
+	return 1.0;
 }
 
 vec3 GertsnerWave(vec4 Wave, vec3 p, float time, inout vec3 tangent, inout vec3 binormal){
@@ -72,33 +78,33 @@ void vertex(){
 	vec3 g1Normal = normalize(cross(g1binormal,g1tangent));
 	WaveMask += WaveFoamMask(g1Normal,vec2(Wave1.z,Wave1.w));
 	
-	vec3 g2tangent = tangent;
-	vec3 g2binormal = binormal;
+	vec3 g2tangent = g1tangent;
+	vec3 g2binormal = g1binormal;
 	vec3 g2 = GertsnerWave(Wave2,gridPoint,TIME,g2tangent,g2binormal);
 	vec3 g2Normal = normalize(cross(g2binormal,g2tangent));
-	WaveMask = max(WaveMask, WaveFoamMask(g2Normal,vec2(Wave2.z,Wave2.w)));
+	//WaveMask = max(WaveMask, WaveFoamMask(g2Normal,vec2(Wave2.z,Wave2.w)));
 	
-	vec3 g3tangent = tangent;
-	vec3 g3binormal = binormal;
+	vec3 g3tangent = g2tangent;
+	vec3 g3binormal = g2binormal;
 	vec3 g3 = GertsnerWave(Wave3,gridPoint,TIME,g3tangent,g3binormal);
 	vec3 g3Normal = normalize(cross(g3binormal,g3tangent));
-	WaveMask = max(WaveMask,WaveFoamMask(g3Normal,vec2(Wave3.z,Wave3.w)));
+	//WaveMask = max(WaveMask,WaveFoamMask(g3Normal,vec2(Wave3.z,Wave3.w)));
 	
 	
-	vec3 g4tangent = tangent;
-	vec3 g4binormal = binormal;
+	vec3 g4tangent = g3tangent;
+	vec3 g4binormal = g3binormal;
 	vec3 g4 = GertsnerWave(Wave4,gridPoint,TIME,g4tangent,g4binormal);
 	vec3 g4Normal = normalize(cross(g4binormal,g4tangent));
-	WaveMask =  max(WaveMask,WaveFoamMask(g4Normal,vec2(Wave4.z,Wave4.w)));
+	//WaveMask =  max(WaveMask,WaveFoamMask(g4Normal,vec2(Wave4.z,Wave4.w)));
 	
-	//WaveMask = WaveMask / 4.0;
+	WaveMask = clamp(WaveMask,0,1);
 	
 	p += g1;
 	p += g2;
 	p += g3;
 	p += g4;
-	//tangent += g1tangent + g2tangent + g3tangent + g4tangent;
-	//binormal += g1binormal + g2binormal + g3binormal + g4binormal;
+	tangent += g4tangent;
+	binormal += g4binormal;
 	
 	NORMAL = normalize(cross(binormal,tangent));
 	
@@ -106,19 +112,26 @@ void vertex(){
 }
 
 void fragment(){
-	METALLIC = Metallic;
-	ROUGHNESS = Roughness;
-	
-	//ALBEDO = mix(WaveColor.xyz,vec3(1,1,1), smoothstep(COLOR.a,0.25,0.6));
-	float WaveMaskFinal = smoothstep(WaveMask,0.3,0.55);
-	ALBEDO = vec3(WaveMaskFinal,WaveMaskFinal,WaveMaskFinal);
+	float WaveMaskFinal = smoothstep(WaveMask,0.37,0.51);
+	//float WaveMaskFinal = step(WaveMask,0.4);
+	WaveMaskFinal = texture(FoamTexture,pos.xz).r * WaveMaskFinal;
+	METALLIC = mix(Metallic,0,WaveMaskFinal);
+	ROUGHNESS = mix(Roughness,1,WaveMaskFinal);
+	ALBEDO = mix(WaveColor.xyz,vec3(1,1,1), WaveMaskFinal);
+	//ALBEDO = vec3(WaveMaskFinal,WaveMaskFinal,WaveMaskFinal);
 	//ALBEDO = COLOR.rgb;
-	ALPHA = WaveColor.a;
+	float depth_tex = textureLod(DEPTH_TEXTURE,SCREEN_UV,0.0).r;
+	vec4 world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV*2.0-1.0,depth_tex*2.0-1.0,1.0);
+	world_pos.xyz/=world_pos.w;
+	ALPHA*=clamp(1.0-smoothstep(world_pos.z+ProximityFadeDistance,world_pos.z,VERTEX.z),0.0,1.0);
 	
-	vec3 normal1 = texture(NormalsA,(vec2(pos.x,pos.z) * NormalsAScale) + TIME * NormalSpeed).xyz * 2.0 - 1.0;
-	vec3 normal2 = texture(NormalsB,(vec2(pos.x,pos.z) * NormalsBScale) - TIME * NormalSpeed).xyz * 2.0 - 1.0;
+	SSS_STRENGTH = 1.0;
+	vec3 normal1 = texture(NormalsA,(pos.xz * NormalsAScale) + TIME * NormalSpeed).xyz * 2.0 - 1.0;
+	vec3 normal2 = texture(NormalsB,(pos.xz * NormalsBScale) - TIME * NormalSpeed).xyz * 2.0 - 1.0;
 	vec2 pd = normal1.xy/normal1.z + normal2.xy/normal2.z;
 	vec3 r = normalize(vec3(pd,1));
-	NORMALMAP = r * 0.5 + 0.5;
+	//NORMALMAP = r * 0.5 + 0.5;
+	
+	NORMALMAP = texture(NormalsA,(vec2(pos.x,pos.z)*NormalsAScale) + TIME * NormalSpeed).xyz;
 	NORMALMAP_DEPTH = NormalsDepth;
 }
