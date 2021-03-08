@@ -112,14 +112,12 @@ void vertex(){
 }
 
 void fragment(){
-	float WaveMaskFinal = smoothstep(WaveMask,0.5,0.75);
+	float WaveMaskFinal = smoothstep(WaveMask,0.5,0.8);
 	//float WaveMaskFinal = step(WaveMask,0.4);
 	WaveMaskFinal = texture(FoamTexture,pos.xz).r * WaveMaskFinal;
 	METALLIC = mix(Metallic,0,WaveMaskFinal);
 	ROUGHNESS = mix(Roughness,1,WaveMaskFinal);
 	ALBEDO = mix(WaveColor.xyz,vec3(1,1,1), WaveMaskFinal);
-	//ALBEDO = vec3(WaveMaskFinal,WaveMaskFinal,WaveMaskFinal);
-	//ALBEDO = COLOR.rgb;
 	float depth_tex = textureLod(DEPTH_TEXTURE,SCREEN_UV,0.0).r;
 	vec4 world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV*2.0-1.0,depth_tex*2.0-1.0,1.0);
 	world_pos.xyz/=world_pos.w;
