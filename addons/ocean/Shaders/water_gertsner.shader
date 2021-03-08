@@ -59,7 +59,7 @@ vec3 GertsnerWave(vec4 Wave, vec3 p, float time, inout vec3 tangent, inout vec3 
 
 float WaveFoamMask(vec3 normal, vec2 direction){
 	direction = normalize(-direction);
-	float result = dot(normal, vec3(direction.x, 0, direction.y));
+	float result = dot(normal, vec3(direction.x, 0.35, direction.y));
 	result = remap(result, -1, 1, 0, 1);
 	return result;
 }
@@ -82,20 +82,20 @@ void vertex(){
 	vec3 g2binormal = g1binormal;
 	vec3 g2 = GertsnerWave(Wave2,gridPoint,TIME,g2tangent,g2binormal);
 	vec3 g2Normal = normalize(cross(g2binormal,g2tangent));
-	//WaveMask = max(WaveMask, WaveFoamMask(g2Normal,vec2(Wave2.z,Wave2.w)));
+	WaveMask = max(WaveMask, WaveFoamMask(g2Normal,vec2(Wave2.z,Wave2.w)));
 	
 	vec3 g3tangent = g2tangent;
 	vec3 g3binormal = g2binormal;
 	vec3 g3 = GertsnerWave(Wave3,gridPoint,TIME,g3tangent,g3binormal);
 	vec3 g3Normal = normalize(cross(g3binormal,g3tangent));
-	//WaveMask = max(WaveMask,WaveFoamMask(g3Normal,vec2(Wave3.z,Wave3.w)));
+	WaveMask = max(WaveMask,WaveFoamMask(g3Normal,vec2(Wave3.z,Wave3.w)));
 	
 	
 	vec3 g4tangent = g3tangent;
 	vec3 g4binormal = g3binormal;
 	vec3 g4 = GertsnerWave(Wave4,gridPoint,TIME,g4tangent,g4binormal);
 	vec3 g4Normal = normalize(cross(g4binormal,g4tangent));
-	//WaveMask =  max(WaveMask,WaveFoamMask(g4Normal,vec2(Wave4.z,Wave4.w)));
+	WaveMask =  max(WaveMask,WaveFoamMask(g4Normal,vec2(Wave4.z,Wave4.w)));
 	
 	WaveMask = clamp(WaveMask,0,1);
 	
@@ -112,7 +112,7 @@ void vertex(){
 }
 
 void fragment(){
-	float WaveMaskFinal = smoothstep(WaveMask,0.37,0.51);
+	float WaveMaskFinal = smoothstep(WaveMask,0.5,0.75);
 	//float WaveMaskFinal = step(WaveMask,0.4);
 	WaveMaskFinal = texture(FoamTexture,pos.xz).r * WaveMaskFinal;
 	METALLIC = mix(Metallic,0,WaveMaskFinal);
