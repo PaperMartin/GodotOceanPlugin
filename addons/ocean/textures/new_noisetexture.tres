@@ -3,12 +3,11 @@
 [sub_resource type="OpenSimplexNoise" id=1]
 seed = 3
 octaves = 2
-period = 128.0
+period = 32.0
 
 [resource]
 width = 1024
 height = 1024
 seamless = true
 as_normalmap = true
-bump_strength = 64.0
 noise = SubResource( 1 )

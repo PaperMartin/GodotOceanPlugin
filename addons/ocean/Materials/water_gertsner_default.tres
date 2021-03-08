@@ -1,23 +1,28 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+[gd_resource type="ShaderMaterial" load_steps=5 format=2]
 
 [ext_resource path="res://addons/ocean/Shaders/water_gertsner.shader" type="Shader" id=1]
-[ext_resource path="res://addons/ocean/textures/WaveNormals.jpg" type="Texture" id=2]
+[ext_resource path="res://addons/ocean/textures/Foam_diffuse.png" type="Texture" id=2]
 [ext_resource path="res://addons/ocean/textures/FoamTex.tres" type="Texture" id=3]
+[ext_resource path="res://addons/ocean/textures/new_noisetexture.tres" type="Texture" id=4]
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/WaveColor = Color( 0.0980392, 0.294118, 0.435294, 1 )
-shader_param/Metallic = 0.75
-shader_param/Roughness = 0.25
-shader_param/NormalsAScale = 0.25
-shader_param/NormalsBScale = 0.5
+shader_param/WaveColor = Color( 0, 0.505882, 0.854902, 1 )
+shader_param/Metallic = 0.85
+shader_param/Roughness = 0.1
+shader_param/Specular = 1.0
+shader_param/NormalsAScale = 0.5
+shader_param/NormalsBScale = 1.0
 shader_param/NormalSpeed = 0.1
 shader_param/NormalsDepth = 0.5
-shader_param/ProximityFadeDistance = 0.5
+shader_param/BorderFoamFade = 2.0
+shader_param/RefractionScale = Vector2( 0.25, 0.25 )
+shader_param/RefractionStrength = 0.03
+shader_param/WaterDepthFade = 4.0
 shader_param/Wave1 = Plane( 5, 0.5, 1, 1 )
 shader_param/Wave2 = Plane( 2, 0.25, 0, 1 )
 shader_param/Wave3 = Plane( 1, 0.125, 1, 0 )
 shader_param/Wave4 = Plane( 0.5, 0.125, 1, 0 )
-shader_param/FoamTexture = ExtResource( 3 )
-shader_param/NormalsA = ExtResource( 2 )
-shader_param/NormalsB = ExtResource( 2 )
+shader_param/FoamTexture = ExtResource( 2 )
+shader_param/NormalsA = ExtResource( 4 )
+shader_param/RefractionTexture = ExtResource( 3 )

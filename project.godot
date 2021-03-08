@@ -19,6 +19,10 @@ config/name="sailing_game"
 run/main_scene="res://Scenes/Sea.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/per_pixel_transparency/allowed=true
+
 [editor_plugins]
 
 enabled=PoolStringArray( "ocean" )
@@ -27,6 +31,8 @@ enabled=PoolStringArray( "ocean" )
 
 quality/directional_shadow/size=8192
 quality/shadow_atlas/size=8192
+quality/subsurface_scattering/quality=2
+quality/subsurface_scattering/follow_surface=true
 quality/voxel_cone_tracing/high_quality=true
 quality/filters/msaa=4
 environment/default_environment="res://default_env.tres"

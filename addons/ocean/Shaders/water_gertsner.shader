@@ -1,9 +1,10 @@
 shader_type spatial;
 //render_mode unshaded;
-render_mode blend_mix,world_vertex_coords, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix,depth_draw_always,cull_back,diffuse_burley,specular_schlick_ggx, world_vertex_coords;
 uniform vec4 WaveColor : hint_color;
 uniform float Metallic : hint_range(0,1);
 uniform float Roughness : hint_range(0,1);
+uniform float Specular : hint_range(0,1);
 uniform sampler2D FoamTexture;
 uniform sampler2D NormalsA : hint_normal;
 uniform float NormalsAScale = 1;
@@ -11,7 +12,11 @@ uniform sampler2D NormalsB : hint_normal;
 uniform float NormalsBScale = 0.5;
 uniform float NormalSpeed = 1;
 uniform float NormalsDepth = 0.2;
-uniform float ProximityFadeDistance = 0.2;
+uniform float BorderFoamFade = 0.2;
+uniform sampler2D RefractionTexture;
+uniform vec2 RefractionScale;
+uniform float RefractionStrength;
+uniform float WaterDepthFade = 2.0;
 uniform vec4 Wave1;
 uniform vec4 Wave2;
 uniform vec4 Wave3;
@@ -59,7 +64,7 @@ vec3 GertsnerWave(vec4 Wave, vec3 p, float time, inout vec3 tangent, inout vec3 
 
 float WaveFoamMask(vec3 normal, vec2 direction){
 	direction = normalize(-direction);
-	float result = dot(normal, vec3(direction.x, 0.35, direction.y));
+	float result = dot(normal, vec3(direction.x, 0.4, direction.y));
 	result = remap(result, -1, 1, 0, 1);
 	return result;
 }
@@ -103,8 +108,9 @@ void vertex(){
 	p += g2;
 	p += g3;
 	p += g4;
-	tangent += g4tangent;
-	binormal += g4binormal;
+	tangent = g4tangent;
+	binormal = g4binormal;
+	
 	
 	NORMAL = normalize(cross(binormal,tangent));
 	
@@ -112,24 +118,37 @@ void vertex(){
 }
 
 void fragment(){
-	float WaveMaskFinal = smoothstep(WaveMask,0.5,0.8);
-	//float WaveMaskFinal = step(WaveMask,0.4);
-	WaveMaskFinal = texture(FoamTexture,pos.xz).r * WaveMaskFinal;
-	METALLIC = mix(Metallic,0,WaveMaskFinal);
-	ROUGHNESS = mix(Roughness,1,WaveMaskFinal);
-	ALBEDO = mix(WaveColor.xyz,vec3(1,1,1), WaveMaskFinal);
-	float depth_tex = textureLod(DEPTH_TEXTURE,SCREEN_UV,0.0).r;
-	vec4 world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV*2.0-1.0,depth_tex*2.0-1.0,1.0);
-	world_pos.xyz/=world_pos.w;
-	ALPHA*=clamp(1.0-smoothstep(world_pos.z+ProximityFadeDistance,world_pos.z,VERTEX.z),0.0,1.0);
-	
-	SSS_STRENGTH = 1.0;
 	vec3 normal1 = texture(NormalsA,(pos.xz * NormalsAScale) + TIME * NormalSpeed).xyz * 2.0 - 1.0;
 	vec3 normal2 = texture(NormalsB,(pos.xz * NormalsBScale) - TIME * NormalSpeed).xyz * 2.0 - 1.0;
 	vec2 pd = normal1.xy/normal1.z + normal2.xy/normal2.z;
 	vec3 r = normalize(vec3(pd,1));
-	//NORMALMAP = r * 0.5 + 0.5;
 	
+	NORMALMAP = r * 0.5 + 0.5;
 	NORMALMAP = texture(NormalsA,(vec2(pos.x,pos.z)*NormalsAScale) + TIME * NormalSpeed).xyz;
 	NORMALMAP_DEPTH = NormalsDepth;
+	
+	float WaveMaskFinal = smoothstep(WaveMask,0.55,0.8);
+	float depth_tex = textureLod(DEPTH_TEXTURE,SCREEN_UV,0.0).r;
+	vec4 world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV*2.0-1.0,depth_tex*2.0-1.0,1.0);
+	world_pos.xyz /= world_pos.w;
+	float depthfoammask = clamp(1.0-smoothstep(world_pos.z+BorderFoamFade,world_pos.z,VERTEX.z),0.0,1.0);
+	float depthwatermask = clamp(1.0-smoothstep(world_pos.z+WaterDepthFade,world_pos.z,VERTEX.z),0.0,1.0);
+	WaveMaskFinal = max(WaveMaskFinal,1.0 - depthfoammask);
+	//float WaveMaskFinal = step(WaveMask,0.4);
+	WaveMaskFinal = texture(FoamTexture,pos.xz).r * WaveMaskFinal;
+	
+	//METALLIC = mix(Metallic,0,WaveMaskFinal);
+	METALLIC = Metallic;
+	//ROUGHNESS = mix(Roughness,1,WaveMaskFinal);
+	ROUGHNESS = Roughness;
+	SPECULAR = Specular;
+	
+	float refraction = texture(RefractionTexture,(pos.xz + (TIME * 0.25)) * RefractionScale).r - 0.5;
+	refraction = refraction * RefractionStrength;
+	vec3 screen = texture(SCREEN_TEXTURE,SCREEN_UV + refraction).xyz;
+	vec3 colorfinal = mix(WaveColor.xyz,screen.xyz,1.0 - depthwatermask);
+	
+	ALBEDO = mix(colorfinal,vec3(1,1,1), WaveMaskFinal);
+	//ALBEDO = NORMAL;
+	ALPHA = 1.0;
 }
