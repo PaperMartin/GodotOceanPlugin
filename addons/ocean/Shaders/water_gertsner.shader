@@ -142,17 +142,19 @@ void fragment(){
 	ROUGHNESS = Roughness;
 	SPECULAR = Specular;
 	
-	float refraction = texture(RefractionTexture,(pos.xz + (TIME * 0.25)) * RefractionScale).r - 0.5;
+	float refraction = texture(RefractionTexture,(pos.xz + (TIME * 0.25)) * RefractionScale.xy).r - 0.5;
 	refraction = refraction * RefractionStrength;
 	
-	float refracteddepth_tex = textureLod(DEPTH_TEXTURE,SCREEN_UV + refraction,0.0).r;
-	vec4 refractedworld_pos = INV_PROJECTION_MATRIX * vec4((SCREEN_UV)*2.0-1.0,refracteddepth_tex*2.0-1.0,1.0);
+	vec2 refractedScreenUV = SCREEN_UV + refraction;
+	
+	float refracteddepth_tex = textureLod(DEPTH_TEXTURE,refractedScreenUV,0.0).r;
+	vec4 refractedworld_pos = INV_PROJECTION_MATRIX * vec4((refractedScreenUV)*2.0-1.0,refracteddepth_tex*2.0-1.0,1.0);
 	refractedworld_pos.xyz /= refractedworld_pos.w;	
 	float depthwatermask = clamp(1.0-smoothstep(refractedworld_pos.z+WaterDepthFade,refractedworld_pos.z,VERTEX.z),0.0,1.0);
 	
-	vec3 screen = texture(SCREEN_TEXTURE,SCREEN_UV + refraction).xyz;
-	vec3 colorfinal = mix(WaveColor.xyz,screen.xyz,1.0 - depthwatermask);
-	
+	vec3 screen = texture(SCREEN_TEXTURE,SCREEN_UV + (refraction)).xyz;
+	vec3 colorfinal = mix(screen.xyz, WaveColor.xyz,depthwatermask);
+	//ALBEDO = vec3(depthwatermask,depthwatermask,depthwatermask);
 	ALBEDO = mix(colorfinal,vec3(1,1,1), WaveMaskFinal);
 	//ALBEDO = NORMAL;
 	ALPHA = 1.0;
