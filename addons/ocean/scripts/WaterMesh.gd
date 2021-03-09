@@ -5,10 +5,10 @@ var HorizontalSubdiv : int
 var VerticalSubdiv : int
 var Scale : Vector2
 var WaterMat : ShaderMaterial
-var Wave1 : Resource
-var Wave2 : Resource
-var Wave3 : Resource
-var Wave4 : Resource
+var Wave1 : WaveSettings
+var Wave2 : WaveSettings
+var Wave3 : WaveSettings
+var Wave4 : WaveSettings
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"

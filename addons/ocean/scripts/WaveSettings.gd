@@ -1,4 +1,5 @@
 tool
+class_name WaveSettings
 extends Resource
 
 export (float,0.001,999999) var WaveLength setget _set_wavelength
