@@ -1,5 +1,5 @@
 tool
-class_name WaveSettings
+class_name WaveSettings, "res://addons/ocean/textures/WaterBodyIcon.png"
 extends Resource
 
 export (float,0.001,999999) var WaveLength setget _set_wavelength
@@ -21,3 +21,7 @@ func _set_steepness(var newSteepness : float):
 func _set_direction(var newDirection : Vector2):
 	Direction = newDirection
 	emit_signal("changed")
+
+func get_parameters_as_plane():
+	var plane : Plane = Plane(WaveLength,Steepness,Direction.x,Direction.y)
+	return plane

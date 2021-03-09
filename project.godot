@@ -9,13 +9,25 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "MeshInstance",
+"class": "SinglePlaneWater",
+"language": "GDScript",
+"path": "res://addons/ocean/scripts/SinglePlaneWater.gd"
+}, {
+"base": "Spatial",
+"class": "WaterBody",
+"language": "GDScript",
+"path": "res://addons/ocean/scripts/WaterBody.gd"
+}, {
 "base": "Resource",
 "class": "WaveSettings",
 "language": "GDScript",
 "path": "res://addons/ocean/scripts/WaveSettings.gd"
 } ]
 _global_script_class_icons={
-"WaveSettings": ""
+"SinglePlaneWater": "res://addons/ocean/textures/WaterBodyIcon.png",
+"WaterBody": "res://addons/ocean/textures/WaterBodyIcon.png",
+"WaveSettings": "res://addons/ocean/textures/WaterBodyIcon.png"
 }
 
 [application]
