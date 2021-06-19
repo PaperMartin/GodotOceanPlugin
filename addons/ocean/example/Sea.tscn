@@ -61,7 +61,7 @@ shader_param/foamParticleMask = ExtResource( 11 )
 shader_param/RefractionTexture = ExtResource( 3 )
 
 [sub_resource type="PlaneMesh" id=7]
-size = Vector2( 32, 32 )
+size = Vector2( 64, 64 )
 subdivide_width = 199
 subdivide_depth = 199
 
@@ -115,11 +115,21 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.82532, -0.225234, -4.59709 
 mesh = SubResource( 4 )
 material/0 = SubResource( 5 )
 
+[node name="CameraRotation" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+script = ExtResource( 5 )
+Speed = 45.0
+
+[node name="Camera" type="Camera" parent="CameraRotation"]
+transform = Transform( -0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, 0.5, -0.5, 17, 10, -17 )
+cull_mask = 524287
+
 [node name="WaterBody" type="Spatial" parent="."]
 script = ExtResource( 8 )
+Player = NodePath("../CameraRotation/Camera")
 HorizontalSubdivision = 199
 VerticalSubdivision = 199
-QuadSize = Vector2( 32, 32 )
+QuadSize = Vector2( 64, 64 )
 
 [node name="Viewport" type="Viewport" parent="WaterBody"]
 size = Vector2( 2048, 2048 )
@@ -137,18 +147,18 @@ size = 32.0
 far = 200.0
 
 [node name="SinglePlaneWater" type="MeshInstance" parent="WaterBody"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0109615, 4.76837e-07, -0.0240355 )
 material_override = SubResource( 6 )
 mesh = SubResource( 7 )
 material/0 = null
 script = ExtResource( 6 )
+FollowPlayer = true
 
 [node name="ParticlesRotation" type="Spatial" parent="."]
-transform = Transform( 0.198013, 0, 0.9802, 0, 1, 0, -0.9802, 0, 0.198013, 0, -5, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0 )
 script = ExtResource( 5 )
 
 [node name="Particles" type="Particles" parent="ParticlesRotation"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 8 )
+transform = Transform( 0.945456, 0.32575, 1.4239e-08, 0, -4.37114e-08, 1, 0.32575, -0.945456, -4.13272e-08, -2.606, 0, 7.56365 )
 layers = 524288
 amount = 128
 lifetime = 3.0
@@ -157,14 +167,8 @@ local_coords = false
 process_material = SubResource( 10 )
 draw_pass_1 = SubResource( 11 )
 
-[node name="CameraRotation" type="Spatial" parent="."]
-
-[node name="Camera" type="Camera" parent="CameraRotation"]
-transform = Transform( -0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, 0.5, -0.5, 17, 10, -17 )
-cull_mask = 524287
-
 [node name="MeshInstance3" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -18.4778 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2.8829, -18.4778 )
 material_override = SubResource( 12 )
 mesh = SubResource( 13 )
 material/0 = null

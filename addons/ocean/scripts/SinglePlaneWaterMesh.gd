@@ -2,6 +2,8 @@ tool
 class_name SinglePlaneWaterMesh, "res://addons/ocean/textures/WaterBodyIcon.png"
 extends MeshInstance
 
+export var FollowPlayer : bool = false
+
 var waterBody : WaterBody
 
 var wave1 : WaveSettings
@@ -23,6 +25,9 @@ func _enter_tree():
 		waterBody.connect("subdiv_update",self,"update_subdiv")
 		waterBody.connect("planesize_update",self,"update_plane_size")
 		
+		if not Engine.editor_hint:
+			VisualServer.connect("frame_pre_draw",self,"_update_position")
+		
 		initialize_mesh()
 		update_material()
 		update_wave1()
@@ -42,6 +47,15 @@ func _exit_tree():
 		waterBody.Wave3.disconnect("changed", self, "update_material")
 	if waterBody.Wave4 != null:
 		waterBody.Wave4.disconnect("changed", self, "update_material")
+	pass
+
+func _update_position():
+	if FollowPlayer:
+		var newPos = global_transform.origin
+		var player : Spatial = waterBody.get_player()
+		newPos.x = player.global_transform.origin.x
+		newPos.z = player.global_transform.origin.z
+		global_transform.origin = newPos
 	pass
 
 func initialize_mesh():

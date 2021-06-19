@@ -1,4 +1,3 @@
-tool
 extends Spatial
 
 export var Speed : float = 90

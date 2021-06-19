@@ -2,6 +2,7 @@ tool
 class_name WaterBody, "res://addons/ocean/textures/WaterBodyIcon.png"
 extends Spatial
 
+export var Player : NodePath
 export var HorizontalSubdivision : int = 49 setget _horizontalsubdivisionupdate
 export var VerticalSubdivision : int = 49 setget _verticalsubdivisionupdate
 export var QuadSize : Vector2 = Vector2(10,10) setget _setplanesize
@@ -23,6 +24,9 @@ func _ready():
 	if Engine.editor_hint:
 		_editor_update()
 	pass
+
+func get_player():
+	return get_node(Player)
 
 func _update_wave1(Wave):
 	Wave1 = Wave
