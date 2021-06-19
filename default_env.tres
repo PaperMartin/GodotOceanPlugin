@@ -5,6 +5,7 @@
 [resource]
 background_mode = 2
 background_sky = SubResource( 1 )
+ambient_light_energy = 0.2
 tonemap_mode = 2
 ss_reflections_max_steps = 256
 ss_reflections_fade_out = 0.00158643
@@ -12,4 +13,6 @@ ssao_enabled = true
 ssao_bias = 0.25
 ssao_quality = 2
 dof_blur_far_quality = 2
+glow_strength = 1.18
+glow_blend_mode = 0
 glow_bicubic_upscale = true

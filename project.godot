@@ -10,9 +10,14 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "MeshInstance",
-"class": "SinglePlaneWater",
+"class": "ClipPlaneWaterMesh",
 "language": "GDScript",
-"path": "res://addons/ocean/scripts/SinglePlaneWater.gd"
+"path": "res://addons/ocean/scripts/ClipPlaneWater.gd"
+}, {
+"base": "MeshInstance",
+"class": "SinglePlaneWaterMesh",
+"language": "GDScript",
+"path": "res://addons/ocean/scripts/SinglePlaneWaterMesh.gd"
 }, {
 "base": "Spatial",
 "class": "WaterBody",
@@ -25,7 +30,8 @@ _global_script_classes=[ {
 "path": "res://addons/ocean/scripts/WaveSettings.gd"
 } ]
 _global_script_class_icons={
-"SinglePlaneWater": "res://addons/ocean/textures/WaterBodyIcon.png",
+"ClipPlaneWaterMesh": "res://addons/ocean/textures/WaterBodyIcon.png",
+"SinglePlaneWaterMesh": "res://addons/ocean/textures/WaterBodyIcon.png",
 "WaterBody": "res://addons/ocean/textures/WaterBodyIcon.png",
 "WaveSettings": "res://addons/ocean/textures/WaterBodyIcon.png"
 }
@@ -43,6 +49,10 @@ window/per_pixel_transparency/allowed=true
 [editor_plugins]
 
 enabled=PoolStringArray( "ocean" )
+
+[layer_names]
+
+3d_render/layer_20="Foam"
 
 [rendering]
 

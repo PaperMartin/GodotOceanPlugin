@@ -12,6 +12,8 @@ uniform sampler2D NormalsB : hint_normal;
 uniform float NormalsBScale = 0.5;
 uniform float NormalSpeed = 1;
 uniform float NormalsDepth = 0.2;
+uniform sampler2D foamParticleMask;
+uniform vec2 foamMaskWorldPos;
 uniform float BorderFoamFade = 0.2;
 uniform sampler2D RefractionTexture;
 uniform vec2 RefractionScale;
@@ -124,7 +126,7 @@ void fragment(){
 	vec3 r = normalize(vec3(pd,1));
 	
 	NORMALMAP = r * 0.5 + 0.5;
-	NORMALMAP = texture(NormalsA,(vec2(pos.x,pos.z)*NormalsAScale) + TIME * NormalSpeed).xyz;
+	NORMALMAP = texture(NormalsA,(pos.xz/NormalsAScale) + TIME * NormalSpeed).xyz;
 	NORMALMAP_DEPTH = NormalsDepth;
 	
 	float WaveMaskFinal = smoothstep(WaveMask,0.55,0.8);
@@ -133,13 +135,16 @@ void fragment(){
 	world_pos.xyz /= world_pos.w;
 	float depthfoammask = clamp(1.0-smoothstep(world_pos.z+BorderFoamFade,world_pos.z,VERTEX.z),0.0,1.0);
 	WaveMaskFinal = max(WaveMaskFinal,1.0 - depthfoammask);
+	float foamparticlemaskfinal = texture(foamParticleMask,((pos.xz + vec2(16.0,16.0)) / 32.0)).r;
+	foamparticlemaskfinal = clamp(foamparticlemaskfinal,0.0,1.0);
+	
+	WaveMaskFinal = max(WaveMaskFinal,foamparticlemaskfinal);
 	//float WaveMaskFinal = step(WaveMask,0.4);
 	WaveMaskFinal = texture(FoamTexture,pos.xz).r * WaveMaskFinal;
-	
-	//METALLIC = mix(Metallic,0,WaveMaskFinal);
 	METALLIC = Metallic;
-	//ROUGHNESS = mix(Roughness,1,WaveMaskFinal);
+	//METALLIC = mix(Metallic,0,WaveMaskFinal);
 	ROUGHNESS = Roughness;
+	//ROUGHNESS = mix(Roughness,1,WaveMaskFinal);
 	SPECULAR = Specular;
 	
 	float refraction = texture(RefractionTexture,(pos.xz + (TIME * 0.25)) * RefractionScale.xy).r - 0.5;
@@ -156,6 +161,7 @@ void fragment(){
 	vec3 colorfinal = mix(screen.xyz, WaveColor.xyz,depthwatermask);
 	//ALBEDO = vec3(depthwatermask,depthwatermask,depthwatermask);
 	ALBEDO = mix(colorfinal,vec3(1,1,1), WaveMaskFinal);
+	//ALBEDO = vec3(foamparticlemaskfinal,foamparticlemaskfinal,foamparticlemaskfinal);
 	//ALBEDO = NORMAL;
 	ALPHA = 1.0;
 }
