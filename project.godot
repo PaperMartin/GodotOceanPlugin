@@ -39,7 +39,7 @@ _global_script_class_icons={
 [application]
 
 config/name="sailing_game"
-run/main_scene="res://Scenes/Sea.tscn"
+run/main_scene="res://addons/ocean/example/Sea.tscn"
 config/icon="res://icon.png"
 
 [display]
