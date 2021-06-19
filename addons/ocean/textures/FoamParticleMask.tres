@@ -1,4 +1,4 @@
 [gd_resource type="ViewportTexture" format=2]
 
 [resource]
-viewport_path = NodePath("Viewport")
+viewport_path = NodePath("WaterBody/Viewport")
