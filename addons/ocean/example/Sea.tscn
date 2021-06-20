@@ -20,11 +20,11 @@ shader_param/WaveColor = Color( 0, 0.505882, 0.854902, 1 )
 shader_param/Metallic = 0.85
 shader_param/Roughness = 0.1
 shader_param/Specular = 1.0
-shader_param/NormalsAScale = 24.0
-shader_param/NormalsBScale = 12.0
+shader_param/NormalsAScale = 16.0
+shader_param/NormalsBScale = 8.0
 shader_param/NormalsASpeed = 0.125
-shader_param/NormalsBSpeed = 0.125
-shader_param/NormalsDepth = 0.5
+shader_param/NormalsBSpeed = 0.063
+shader_param/NormalsDepth = 2.0
 shader_param/foamMaskWorldPos = null
 shader_param/BorderFoamFade = 1.0
 shader_param/RefractionStrength = 0.0
@@ -64,7 +64,7 @@ albedo_texture = ExtResource( 11 )
 [sub_resource type="QuadMesh" id=8]
 size = Vector2( 4, 4 )
 
-[node name="Spatial" type="Spatial"]
+[node name="SeaLevel" type="Spatial"]
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
 transform = Transform( -0.707107, -0.454519, 0.541675, 0, 0.766044, 0.642787, -0.707107, 0.454519, -0.541675, 0, 4.423, 0 )
@@ -89,7 +89,7 @@ script = ExtResource( 8 )
 Player = NodePath("../CameraRotation/Camera")
 HorizontalSubdivision = 199
 VerticalSubdivision = 199
-QuadSize = Vector2( 128, 128 )
+QuadSize = Vector2( 32, 32 )
 
 [node name="Viewport" type="Viewport" parent="WaterBody"]
 size = Vector2( 512, 512 )
@@ -137,7 +137,7 @@ script = ExtResource( 7 )
 MaskViewport = NodePath("../WaterBody/Viewport")
 
 [node name="WaterPluginTerrain" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, 0 )
 
 [node name="Player" parent="." instance=ExtResource( 13 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.69224, 5.74763, -9.98358 )

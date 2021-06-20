@@ -156,12 +156,13 @@ void vertex(){
 }
 
 void fragment(){
-	vec3 normal1 = texture(Normals,(pos.xz / NormalsAScale) + ((normalize(Wave1.zw) * TIME * -NormalsASpeed))).xyz * 2.0 - 1.0;
-	vec3 normal2 = texture(Normals,(pos.xz / NormalsBScale) + ((normalize(Wave4.zw) * TIME * -NormalsBSpeed))).xyz * 2.0 - 1.0;
-	vec3 r = vec3(normal1.x * normal2.x, normal1.y * normal2.y,0.0);
+	vec3 normal1 = texture(Normals,(pos.xz / NormalsAScale) + ((normalize(Wave1.zw) * TIME * -NormalsASpeed))).xyz;
+	vec3 n1_unpacked = normal1 * 2.0 - 1.0;
+	vec3 normal2 = texture(Normals,(pos.xz / NormalsBScale) + ((normalize(Wave4.zw) * TIME * -NormalsBSpeed))).xyz;
+	vec3 n2_unpacked = normal2 * 2.0 - 1.0;
+	vec3 r = vec3(n1_unpacked.x * n2_unpacked.x, n1_unpacked.y * n2_unpacked.y,0.0);
 	
-	
-	NORMALMAP = r + 1.0 * 0.5;
+	NORMALMAP = r * 0.5 + 0.5;
 	NORMALMAP_DEPTH = NormalsDepth;
 	
 	float FoamMask = smoothstep(WaveMask,0.55,0.8);
@@ -203,6 +204,6 @@ void fragment(){
 	//ALBEDO = vec3(linear_depth ,linear_depth,linear_depth);
 	//ALBEDO = vec3(foamparticlemaskfinal,foamparticlemaskfinal,foamparticlemaskfinal);
 	//ALBEDO = NORMAL;
-	RIM = 1.0;
+	//RIM = 1.0;
 	ALPHA = smoothstep(linear_depth + VERTEX.z,-0.1,0.1);
 }

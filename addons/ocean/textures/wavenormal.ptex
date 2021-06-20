@@ -9,25 +9,13 @@
 		{
 			"from": "fbm2",
 			"from_port": 0,
-			"to": "rotate",
-			"to_port": 0
-		},
-		{
-			"from": "rotate",
-			"from_port": 0,
 			"to": "normal_map",
-			"to_port": 0
-		},
-		{
-			"from": "rotate",
-			"from_port": 0,
-			"to": "Material",
 			"to_port": 0
 		}
 	],
 	"label": "Graph",
 	"longdesc": "",
-	"name": "@@264",
+	"name": "264",
 	"node_position": {
 		"x": 0,
 		"y": 0
@@ -65,24 +53,24 @@
 		{
 			"name": "fbm2",
 			"node_position": {
-				"x": -953,
-				"y": -25.5
+				"x": -679,
+				"y": 2.5
 			},
 			"parameters": {
 				"folds": 0,
-				"iterations": 5,
+				"iterations": 6,
 				"noise": 1,
 				"persistence": 0.5,
 				"scale_x": 4,
-				"scale_y": 12
+				"scale_y": 4
 			},
 			"type": "fbm2"
 		},
 		{
 			"name": "normal_map",
 			"node_position": {
-				"x": -389,
-				"y": 175.5
+				"x": -296,
+				"y": 60.5
 			},
 			"parameters": {
 				"param0": 11,
@@ -91,19 +79,6 @@
 				"param4": 1
 			},
 			"type": "normal_map"
-		},
-		{
-			"name": "rotate",
-			"node_position": {
-				"x": -659,
-				"y": 105
-			},
-			"parameters": {
-				"cx": 0,
-				"cy": 0,
-				"rotate": 90
-			},
-			"type": "rotate"
 		}
 	],
 	"parameters": {
