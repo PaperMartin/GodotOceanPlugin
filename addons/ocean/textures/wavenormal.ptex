@@ -1,0 +1,114 @@
+{
+	"connections": [
+		{
+			"from": "normal_map",
+			"from_port": 0,
+			"to": "Material",
+			"to_port": 4
+		},
+		{
+			"from": "fbm2",
+			"from_port": 0,
+			"to": "rotate",
+			"to_port": 0
+		},
+		{
+			"from": "rotate",
+			"from_port": 0,
+			"to": "normal_map",
+			"to_port": 0
+		},
+		{
+			"from": "rotate",
+			"from_port": 0,
+			"to": "Material",
+			"to_port": 0
+		}
+	],
+	"label": "Graph",
+	"longdesc": "",
+	"name": "@@264",
+	"node_position": {
+		"x": 0,
+		"y": 0
+	},
+	"nodes": [
+		{
+			"export_paths": {
+				"Godot": "C:/Users/marti/Desktop/GodotProjects/sailing_game/addons/ocean/textures/WaveNormal"
+			},
+			"name": "Material",
+			"node_position": {
+				"x": 1,
+				"y": 1
+			},
+			"parameters": {
+				"albedo_color": {
+					"a": 1,
+					"b": 1,
+					"g": 1,
+					"r": 1,
+					"type": "Color"
+				},
+				"ao": 1,
+				"depth_scale": 0.5,
+				"emission_energy": 1,
+				"flags_transparent": false,
+				"metallic": 1,
+				"normal": 1,
+				"roughness": 1,
+				"size": 11,
+				"sss": 0
+			},
+			"type": "material"
+		},
+		{
+			"name": "fbm2",
+			"node_position": {
+				"x": -953,
+				"y": -25.5
+			},
+			"parameters": {
+				"folds": 0,
+				"iterations": 5,
+				"noise": 1,
+				"persistence": 0.5,
+				"scale_x": 4,
+				"scale_y": 12
+			},
+			"type": "fbm2"
+		},
+		{
+			"name": "normal_map",
+			"node_position": {
+				"x": -389,
+				"y": 175.5
+			},
+			"parameters": {
+				"param0": 11,
+				"param1": 1,
+				"param2": 2,
+				"param4": 1
+			},
+			"type": "normal_map"
+		},
+		{
+			"name": "rotate",
+			"node_position": {
+				"x": -659,
+				"y": 105
+			},
+			"parameters": {
+				"cx": 0,
+				"cy": 0,
+				"rotate": 90
+			},
+			"type": "rotate"
+		}
+	],
+	"parameters": {
+
+	},
+	"shortdesc": "",
+	"type": "graph"
+}

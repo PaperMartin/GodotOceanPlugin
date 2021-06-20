@@ -62,4 +62,3 @@ quality/subsurface_scattering/quality=2
 quality/subsurface_scattering/follow_surface=true
 quality/voxel_cone_tracing/high_quality=true
 quality/filters/msaa=4
-environment/default_environment="res://default_env.tres"

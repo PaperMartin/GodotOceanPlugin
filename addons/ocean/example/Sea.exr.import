@@ -1,0 +1,24 @@
+[remap]
+
+importer="texture_array"
+type="TextureArray"
+path="res://.import/Sea.exr-929d8a21c6c6f70583a7f4b57a4ea34d.texarr"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://addons/ocean/example/Sea.exr"
+dest_files=[ "res://.import/Sea.exr-929d8a21c6c6f70583a7f4b57a4ea34d.texarr" ]
+
+[params]
+
+compress/mode=0
+compress/no_bptc_if_rgb=false
+flags/repeat=false
+flags/filter=true
+flags/mipmaps=false
+flags/srgb=false
+slices/horizontal=1
+slices/vertical=1

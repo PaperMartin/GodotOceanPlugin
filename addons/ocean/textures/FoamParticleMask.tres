@@ -1,4 +1,6 @@
 [gd_resource type="ViewportTexture" format=2]
 
 [resource]
+resource_local_to_scene = false
+flags = 6
 viewport_path = NodePath("WaterBody/Viewport")
