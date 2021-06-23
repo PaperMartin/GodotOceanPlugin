@@ -1,13 +1,9 @@
-[gd_resource type="SpatialMaterial" load_steps=5 format=2]
+[gd_resource type="SpatialMaterial" load_steps=2 format=2]
 
-[ext_resource path="WaveNormal_normal.png" type="Texture" id=3]
-
+[ext_resource path="res://addons/ocean/textures/WaveNormal_normal.png" type="Texture" id=3]
 
 [resource]
-albedo_color = Color(1, 1, 1, 1)
-metallic = 1
-roughness = 1
+metallic = 1.0
 normal_enabled = true
-normal_scale = 1
+normal_scale = 1.0
 normal_texture = ExtResource( 3 )
-

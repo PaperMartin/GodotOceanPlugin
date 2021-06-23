@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource( 1 )
-WaveLength = 7.5
+WaveLength = 30.0
 Steepness = 0.25
 Direction = Vector2( 1, 0.6 )

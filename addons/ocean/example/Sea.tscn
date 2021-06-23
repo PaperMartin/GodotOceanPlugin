@@ -14,7 +14,7 @@
 [ext_resource path="res://addons/ocean/FoamMaskEnv.tres" type="Environment" id=12]
 [ext_resource path="res://addons/ocean/example/Player/SeaDemoPlayer.tscn" type="PackedScene" id=13]
 
-[sub_resource type="ShaderMaterial" id=11]
+[sub_resource type="ShaderMaterial" id=9]
 shader = ExtResource( 2 )
 shader_param/WaveColor = Color( 0, 0.505882, 0.854902, 1 )
 shader_param/Metallic = 0.85
@@ -23,22 +23,22 @@ shader_param/Specular = 1.0
 shader_param/NormalsAScale = 16.0
 shader_param/NormalsBScale = 8.0
 shader_param/NormalsASpeed = 0.125
-shader_param/NormalsBSpeed = 0.063
+shader_param/NormalsBSpeed = 0.125
 shader_param/NormalsDepth = 2.0
 shader_param/foamMaskWorldPos = null
 shader_param/BorderFoamFade = 1.0
 shader_param/RefractionStrength = 0.0
-shader_param/WaterDepthFade = 10.0
-shader_param/Wave1 = Plane( 15, 0.25, 1, 1 )
-shader_param/Wave2 = Plane( 7.5, 0.25, 1, 0.6 )
-shader_param/Wave3 = Plane( 5, 0.125, 1, 1.3 )
-shader_param/Wave4 = Plane( 2, 0.125, 1, 1 )
+shader_param/WaterDepthFade = 6.0
+shader_param/Wave1 = Plane( 60, 0.25, 1, 1 )
+shader_param/Wave2 = Plane( 30, 0.25, 1, 0.6 )
+shader_param/Wave3 = Plane( 10, 0.125, 1, 1.3 )
+shader_param/Wave4 = Plane( 5, 0.125, 1, 1 )
 shader_param/FoamTexture = ExtResource( 10 )
 shader_param/Normals = ExtResource( 4 )
 shader_param/foamParticleMask = ExtResource( 11 )
 
-[sub_resource type="PlaneMesh" id=10]
-size = Vector2( 128, 128 )
+[sub_resource type="PlaneMesh" id=2]
+size = Vector2( 256, 256 )
 subdivide_width = 199
 subdivide_depth = 199
 
@@ -67,7 +67,7 @@ size = Vector2( 4, 4 )
 [node name="SeaLevel" type="Spatial"]
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
-transform = Transform( -0.707107, -0.454519, 0.541675, 0, 0.766044, 0.642787, -0.707107, 0.454519, -0.541675, 0, 4.423, 0 )
+transform = Transform( -0.707107, -0.454519, 0.541675, 0, 0.766045, 0.642787, -0.707107, 0.454519, -0.541675, 0, 14.9464, 0 )
 light_bake_mode = 0
 shadow_enabled = true
 shadow_bias = 0.02
@@ -89,7 +89,7 @@ script = ExtResource( 8 )
 Player = NodePath("../CameraRotation/Camera")
 HorizontalSubdivision = 199
 VerticalSubdivision = 199
-QuadSize = Vector2( 32, 32 )
+QuadSize = Vector2( 256, 256 )
 
 [node name="Viewport" type="Viewport" parent="WaterBody"]
 size = Vector2( 512, 512 )
@@ -107,9 +107,9 @@ size = 32.0
 far = 200.0
 
 [node name="SinglePlaneWater" type="MeshInstance" parent="WaterBody"]
-material_override = SubResource( 11 )
+material_override = SubResource( 9 )
 generate_lightmap = false
-mesh = SubResource( 10 )
+mesh = SubResource( 2 )
 material/0 = null
 script = ExtResource( 6 )
 
@@ -137,7 +137,13 @@ script = ExtResource( 7 )
 MaskViewport = NodePath("../WaterBody/Viewport")
 
 [node name="WaterPluginTerrain" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -18.1388, 0 )
 
 [node name="Player" parent="." instance=ExtResource( 13 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.69224, 5.74763, -9.98358 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 48.3614, 1.14901, -4.2948 )
+
+[node name="Camera2" type="Camera" parent="."]
+transform = Transform( 0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 26, 5, -31 )
+cull_mask = 524287
+current = true
+far = 1000.0
