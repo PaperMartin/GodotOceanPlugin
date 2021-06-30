@@ -6,6 +6,7 @@ uniform float Metallic : hint_range(0,1);
 uniform float Roughness : hint_range(0,1);
 uniform float Specular : hint_range(0,1);
 uniform sampler2D FoamTexture;
+uniform vec2 FoamTiling = vec2(1.0,1.0);
 uniform sampler2D Normals: hint_normal;
 uniform float NormalsAScale = 1;
 uniform float NormalsBScale = 0.5;
@@ -15,6 +16,7 @@ uniform float NormalsDepth = 0.2;
 uniform sampler2D foamParticleMask;
 uniform vec2 foamMaskWorldPos;
 uniform float BorderFoamFade = 0.2;
+uniform vec2 WaveFoamHeightMinMax = vec2(2.0,4);
 uniform float RefractionStrength = 0.025;
 uniform float WaterDepthFade = 2.0;
 uniform vec4 Wave1;
@@ -24,6 +26,7 @@ uniform vec4 Wave4;
 const float pi = 3.14159265359;
 
 varying vec3 pos;
+varying vec3 finalPos;
 varying float WaveMask;
 
 float remap(float value, float InputA, float InputB, float OutputA, float OutputB){
@@ -72,19 +75,18 @@ float LinearDepth(sampler2D depthTex, vec2 screenuv, mat4 invprojectionmatrix){
 	view.xyz /= view.w;
 	float linear_depth = -view.z;
 	return linear_depth;
-	
 }
 
 float DepthFoamMask(sampler2D depthTex,vec2 screenuv, mat4 invprojectionmatrix, float vertexdepth){
 	float depth_tex = textureLod(depthTex,screenuv,0.0).r;
 	vec4 world_pos = invprojectionmatrix * vec4(screenuv*2.0-1.0,depth_tex*2.0-1.0,1.0);
 	world_pos.xyz /= world_pos.w;
-	float depthfoammask = clamp(1.0-smoothstep(world_pos.z+BorderFoamFade,world_pos.z,vertexdepth),0.0,1.0);
+	float depthfoammask = clamp(1.0-smoothstep(world_pos.z+BorderFoamFade,world_pos.z,vertexdepth),WaveFoamHeightMinMax.y,WaveFoamHeightMinMax.x);
 	return 1.0 - depthfoammask;
 }
 
 float FoamParticleMask(){
-	float foamparticlemask = texture(foamParticleMask,((pos.xz + vec2(16.0,16.0)) / 32.0)).r;
+	float foamparticlemask = texture(foamParticleMask,((finalPos.xz + vec2(128.0,128.0) + foamMaskWorldPos) / 256.0)).r;
 	return clamp(foamparticlemask,0,1);
 }
 
@@ -96,8 +98,7 @@ vec2 RefractedUVs(vec2 screenPos, vec2 tangentspaceNormals, float lineardepth, f
 	return refraction;
 }
 
-vec2 rotate(vec2 uv, vec2 pivot, float angle)
-{
+vec2 rotate(vec2 uv, vec2 pivot, float angle){
 	mat2 rotation = mat2(vec2(sin(angle), -cos(angle)),
 						 vec2(cos(angle), sin(angle)));
 	
@@ -110,38 +111,36 @@ vec2 rotate(vec2 uv, vec2 pivot, float angle)
 void vertex(){
 	pos = VERTEX;
 	WaveMask = 0.0;
-	vec3 gridPoint = VERTEX;
 	vec3 tangent = vec3(1,0,0);
 	vec3 binormal = vec3(0,0,1);
-	vec3 p = gridPoint;
+	vec3 p = pos;
 	
 	vec3 g1tangent = tangent;
 	vec3 g1binormal = binormal;
-	vec3 g1 = GertsnerWave(Wave1,gridPoint,TIME,g1tangent,g1binormal);
+	vec3 g1 = GertsnerWave(Wave1,pos,TIME,g1tangent,g1binormal);
 	vec3 g1Normal = normalize(cross(g1binormal,g1tangent));
 	WaveMask += WaveFoamMask(g1Normal,vec2(Wave1.z,Wave1.w));
 	
 	vec3 g2tangent = g1tangent;
 	vec3 g2binormal = g1binormal;
-	vec3 g2 = GertsnerWave(Wave2,gridPoint,TIME,g2tangent,g2binormal);
+	vec3 g2 = GertsnerWave(Wave2,pos,TIME,g2tangent,g2binormal);
 	vec3 g2Normal = normalize(cross(g2binormal,g2tangent));
 	WaveMask = max(WaveMask, WaveFoamMask(g2Normal,vec2(Wave2.z,Wave2.w)));
 	
 	vec3 g3tangent = g2tangent;
 	vec3 g3binormal = g2binormal;
-	vec3 g3 = GertsnerWave(Wave3,gridPoint,TIME,g3tangent,g3binormal);
+	vec3 g3 = GertsnerWave(Wave3,pos,TIME,g3tangent,g3binormal);
 	vec3 g3Normal = normalize(cross(g3binormal,g3tangent));
 	WaveMask = max(WaveMask,WaveFoamMask(g3Normal,vec2(Wave3.z,Wave3.w)));
 	
 	
 	vec3 g4tangent = g3tangent;
 	vec3 g4binormal = g3binormal;
-	vec3 g4 = GertsnerWave(Wave4,gridPoint,TIME,g4tangent,g4binormal);
+	vec3 g4 = GertsnerWave(Wave4,pos,TIME,g4tangent,g4binormal);
 	vec3 g4Normal = normalize(cross(g4binormal,g4tangent));
 	WaveMask =  max(WaveMask,WaveFoamMask(g4Normal,vec2(Wave4.z,Wave4.w)));
 	
 	WaveMask = clamp(WaveMask,0,1);
-	
 	p += g1;
 	p += g2;
 	p += g3;
@@ -153,6 +152,7 @@ void vertex(){
 	NORMAL = normalize(cross(binormal,tangent));
 	
 	VERTEX = p;
+	finalPos = p;
 }
 
 void fragment(){
@@ -160,7 +160,7 @@ void fragment(){
 	vec3 n1_unpacked = normal1 * 2.0 - 1.0;
 	vec3 normal2 = texture(Normals,(pos.xz / NormalsBScale) + ((normalize(Wave4.zw) * TIME * -NormalsBSpeed))).xyz;
 	vec3 n2_unpacked = normal2 * 2.0 - 1.0;
-	vec3 r = vec3(n1_unpacked.x * n2_unpacked.x, n1_unpacked.y * n2_unpacked.y,0.0);
+	vec3 r = normalize(vec3(n1_unpacked.xy + n2_unpacked.xy, n1_unpacked.z*n2_unpacked.z));
 	
 	NORMALMAP = r * 0.5 + 0.5;
 	NORMALMAP_DEPTH = NormalsDepth;
@@ -169,19 +169,10 @@ void fragment(){
 	FoamMask = 0.0;
 	
 	float depthfoammask = DepthFoamMask(DEPTH_TEXTURE,SCREEN_UV,INV_PROJECTION_MATRIX,VERTEX.z);
-	
 	FoamMask = max(FoamMask,depthfoammask);
-	
 	float foamparticlemaskfinal = FoamParticleMask();
-	
 	FoamMask = max(FoamMask,foamparticlemaskfinal);
-	//float FoamMask = step(WaveMask,0.4);
-	FoamMask = texture(FoamTexture,pos.xz).r * FoamMask;
-	METALLIC = Metallic;
-	//METALLIC = mix(Metallic,0,WaveMaskFinal);
-	ROUGHNESS = Roughness;
-	//ROUGHNESS = mix(Roughness,1,WaveMaskFinal);
-	SPECULAR = Specular;
+	FoamMask = texture(FoamTexture,pos.xz / FoamTiling).r * FoamMask;
 	
 	vec3 n_unpacked = NORMALMAP * 2.0 - 1.0;
 	vec3 n_t = n_unpacked.x * TANGENT;
@@ -200,10 +191,16 @@ void fragment(){
 	vec3 screen = texture(SCREEN_TEXTURE,refractedScreenUV).rgb;
 	vec3 colorfinal = mix(screen.rgb, WaveColor.rgb,depthwatermask);
 	ALBEDO = mix(colorfinal,vec3(1,1,1), FoamMask);
+	//METALLIC = Metallic;
+	METALLIC = mix(Metallic,0,FoamMask);
+	//ROUGHNESS = Roughness;
+	ROUGHNESS = mix(Roughness,1,FoamMask);
+	SPECULAR = Specular;
 	//linear_depth = clamp((linear_depth + VERTEX.z) * 0.0025 ,0.0,1.0);
 	//ALBEDO = vec3(linear_depth ,linear_depth,linear_depth);
-	//ALBEDO = vec3(foamparticlemaskfinal,foamparticlemaskfinal,foamparticlemaskfinal);
+	//ALBEDO = vec3(depthfoammask,depthfoammask,depthfoammask);
 	//ALBEDO = NORMAL;
 	//RIM = 1.0;
-	ALPHA = smoothstep(linear_depth + VERTEX.z,-0.1,0.1);
+	float depthAlpha = smoothstep(linear_depth + VERTEX.z,-0.05,0.25);
+	//ALPHA = depthAlpha;
 }

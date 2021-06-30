@@ -2,22 +2,24 @@
 
 [ext_resource path="res://addons/ocean/Shaders/water_gertsner.shader" type="Shader" id=1]
 [ext_resource path="res://addons/ocean/textures/Foam_diffuse.png" type="Texture" id=2]
-[ext_resource path="res://addons/ocean/textures/WaveNormal_normal.png" type="Texture" id=3]
+[ext_resource path="res://addons/ocean/textures/new_noisetexture.tres" type="Texture" id=3]
 [ext_resource path="res://addons/ocean/textures/FoamParticleMask.tres" type="Texture" id=5]
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/WaveColor = Color( 0, 0.505882, 0.854902, 1 )
+shader_param/WaveColor = Color( 0, 0.796078, 0.854902, 1 )
 shader_param/Metallic = 0.85
 shader_param/Roughness = 0.1
 shader_param/Specular = 1.0
+shader_param/FoamTiling = Vector2( 4, 4 )
 shader_param/NormalsAScale = 16.0
 shader_param/NormalsBScale = 8.0
-shader_param/NormalsASpeed = 0.125
+shader_param/NormalsASpeed = 0.25
 shader_param/NormalsBSpeed = 0.125
 shader_param/NormalsDepth = 2.0
 shader_param/foamMaskWorldPos = null
-shader_param/BorderFoamFade = 1.0
+shader_param/BorderFoamFade = 2.0
+shader_param/WaveFoamHeightMinMax = Vector2( 0, 4 )
 shader_param/RefractionStrength = 0.0
 shader_param/WaterDepthFade = 6.0
 shader_param/Wave1 = Plane( 5, 0.5, 1, 1 )

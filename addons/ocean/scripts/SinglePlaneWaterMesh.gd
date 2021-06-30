@@ -39,14 +39,6 @@ func _enter_tree():
 		pass
 
 func _exit_tree():
-	if waterBody.Wave1 != null:
-		waterBody.Wave1.disconnect("changed", self, "update_material")
-	if waterBody.Wave2 != null:
-		waterBody.Wave2.disconnect("changed", self, "update_material")
-	if waterBody.Wave3 != null:
-		waterBody.Wave3.disconnect("changed", self, "update_material")
-	if waterBody.Wave4 != null:
-		waterBody.Wave4.disconnect("changed", self, "update_material")
 	pass
 
 func _update_position():

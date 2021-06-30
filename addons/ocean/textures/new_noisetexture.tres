@@ -2,8 +2,7 @@
 
 [sub_resource type="OpenSimplexNoise" id=1]
 seed = 3
-octaves = 2
-period = 32.0
+octaves = 5
 
 [resource]
 width = 1024

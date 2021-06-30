@@ -1,38 +1,40 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://addons/ocean/example/SeaEnv.tres" type="Environment" id=1]
 [ext_resource path="res://addons/ocean/Shaders/water_gertsner.shader" type="Shader" id=2]
 [ext_resource path="res://addons/ocean/example/Model/WaterPluginTerrain.tscn" type="PackedScene" id=3]
-[ext_resource path="res://addons/ocean/textures/WaveNormal_normal.png" type="Texture" id=4]
+[ext_resource path="res://addons/ocean/textures/new_noisetexture.tres" type="Texture" id=4]
 [ext_resource path="res://addons/ocean/example/RotateWithTime.gd" type="Script" id=5]
 [ext_resource path="res://addons/ocean/scripts/SinglePlaneWaterMesh.gd" type="Script" id=6]
 [ext_resource path="res://addons/ocean/scripts/WaveMaskRenderDebug.gd" type="Script" id=7]
 [ext_resource path="res://addons/ocean/scripts/WaterBody.gd" type="Script" id=8]
-[ext_resource path="res://addons/ocean/Materials/FoamMaskParticle.tres" type="Material" id=9]
+[ext_resource path="res://addons/ocean/example/FoamParticles.tscn" type="PackedScene" id=9]
 [ext_resource path="res://addons/ocean/textures/Foam_diffuse.png" type="Texture" id=10]
 [ext_resource path="res://addons/ocean/textures/FoamParticleMask.tres" type="Texture" id=11]
 [ext_resource path="res://addons/ocean/FoamMaskEnv.tres" type="Environment" id=12]
 [ext_resource path="res://addons/ocean/example/Player/SeaDemoPlayer.tscn" type="PackedScene" id=13]
 
-[sub_resource type="ShaderMaterial" id=9]
+[sub_resource type="ShaderMaterial" id=6]
 shader = ExtResource( 2 )
-shader_param/WaveColor = Color( 0, 0.505882, 0.854902, 1 )
+shader_param/WaveColor = Color( 0, 0.796078, 0.854902, 1 )
 shader_param/Metallic = 0.85
 shader_param/Roughness = 0.1
 shader_param/Specular = 1.0
+shader_param/FoamTiling = Vector2( 4, 4 )
 shader_param/NormalsAScale = 16.0
 shader_param/NormalsBScale = 8.0
-shader_param/NormalsASpeed = 0.125
+shader_param/NormalsASpeed = 0.25
 shader_param/NormalsBSpeed = 0.125
 shader_param/NormalsDepth = 2.0
 shader_param/foamMaskWorldPos = null
-shader_param/BorderFoamFade = 1.0
+shader_param/BorderFoamFade = 2.0
+shader_param/WaveFoamHeightMinMax = Vector2( 0, 4 )
 shader_param/RefractionStrength = 0.0
 shader_param/WaterDepthFade = 6.0
-shader_param/Wave1 = Plane( 60, 0.25, 1, 1 )
-shader_param/Wave2 = Plane( 30, 0.25, 1, 0.6 )
-shader_param/Wave3 = Plane( 10, 0.125, 1, 1.3 )
-shader_param/Wave4 = Plane( 5, 0.125, 1, 1 )
+shader_param/Wave1 = Plane( 30, 0.25, 1, 1 )
+shader_param/Wave2 = Plane( 15, 0.25, 1.5, 1 )
+shader_param/Wave3 = Plane( 7.5, 0.25, 1, 1.5 )
+shader_param/Wave4 = Plane( 7.5, 0.25, 1, 1.25 )
 shader_param/FoamTexture = ExtResource( 10 )
 shader_param/Normals = ExtResource( 4 )
 shader_param/foamParticleMask = ExtResource( 11 )
@@ -42,27 +44,15 @@ size = Vector2( 256, 256 )
 subdivide_width = 199
 subdivide_depth = 199
 
-[sub_resource type="Gradient" id=3]
-offsets = PoolRealArray( 0, 0.0778098, 1 )
-colors = PoolColorArray( 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0 )
-
-[sub_resource type="GradientTexture" id=4]
-gradient = SubResource( 3 )
-
-[sub_resource type="ParticlesMaterial" id=5]
-spread = 0.0
-gravity = Vector3( 0, 0, 0 )
-scale = 6.0
-color_ramp = SubResource( 4 )
-
-[sub_resource type="QuadMesh" id=6]
-material = ExtResource( 9 )
-
-[sub_resource type="SpatialMaterial" id=7]
+[sub_resource type="SpatialMaterial" id=3]
 albedo_texture = ExtResource( 11 )
 
-[sub_resource type="QuadMesh" id=8]
+[sub_resource type="QuadMesh" id=4]
 size = Vector2( 4, 4 )
+
+[sub_resource type="CylinderMesh" id=5]
+top_radius = 0.5
+bottom_radius = 0.5
 
 [node name="SeaLevel" type="Spatial"]
 
@@ -92,22 +82,22 @@ VerticalSubdivision = 199
 QuadSize = Vector2( 256, 256 )
 
 [node name="Viewport" type="Viewport" parent="WaterBody"]
-size = Vector2( 512, 512 )
+size = Vector2( 1024, 1024 )
 keep_3d_linear = true
 render_target_v_flip = true
 render_target_update_mode = 3
 
 [node name="FoamMaskRenderer" type="Camera" parent="WaterBody/Viewport"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 6.80432, 0 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 39.7906, 0 )
 cull_mask = 524288
 environment = ExtResource( 12 )
 projection = 1
 current = true
-size = 32.0
+size = 256.0
 far = 200.0
 
 [node name="SinglePlaneWater" type="MeshInstance" parent="WaterBody"]
-material_override = SubResource( 9 )
+material_override = SubResource( 6 )
 generate_lightmap = false
 mesh = SubResource( 2 )
 material/0 = null
@@ -115,23 +105,15 @@ script = ExtResource( 6 )
 
 [node name="ParticlesRotation" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0 )
-visible = false
 script = ExtResource( 5 )
 
-[node name="Particles" type="Particles" parent="ParticlesRotation"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 10 )
-layers = 524288
-amount = 128
-lifetime = 3.0
-visibility_aabb = AABB( -40, -40, -40, 80, 80, 80 )
-local_coords = false
-process_material = SubResource( 5 )
-draw_pass_1 = SubResource( 6 )
+[node name="FoamParticles" parent="ParticlesRotation" instance=ExtResource( 9 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 90 )
 
 [node name="DebugFoamDisplay" type="MeshInstance" parent="."]
-transform = Transform( 8, 0, 0, 0, -3.49691e-07, 1, 0, -8, -4.37114e-08, 0, 2.8829, -92.8503 )
-material_override = SubResource( 7 )
-mesh = SubResource( 8 )
+transform = Transform( 8, 0, 0, 0, -3.49691e-07, 1, 0, -8, -4.37114e-08, 0, 2.8829, -157.708 )
+material_override = SubResource( 3 )
+mesh = SubResource( 4 )
 material/0 = null
 script = ExtResource( 7 )
 MaskViewport = NodePath("../WaterBody/Viewport")
@@ -140,10 +122,19 @@ MaskViewport = NodePath("../WaterBody/Viewport")
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -18.1388, 0 )
 
 [node name="Player" parent="." instance=ExtResource( 13 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 48.3614, 1.14901, -4.2948 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 88.2116, -1.51396, 7.95744 )
+mode = 1
+
+[node name="FoamParticles" parent="Player" instance=ExtResource( 9 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
 [node name="Camera2" type="Camera" parent="."]
 transform = Transform( 0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 26, 5, -31 )
 cull_mask = 524287
 current = true
 far = 1000.0
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.91245, 35.5993 )
+mesh = SubResource( 5 )
+material/0 = null
