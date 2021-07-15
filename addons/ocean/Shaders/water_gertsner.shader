@@ -86,7 +86,7 @@ float DepthFoamMask(sampler2D depthTex,vec2 screenuv, mat4 invprojectionmatrix, 
 }
 
 float FoamParticleMask(){
-	float foamparticlemask = texture(foamParticleMask,((finalPos.xz + vec2(128.0,128.0) + foamMaskWorldPos) / 256.0)).r;
+	float foamparticlemask = texture(foamParticleMask,((finalPos.xz + vec2(64.0,64.0) + foamMaskWorldPos) / 128.0)).r;
 	return clamp(foamparticlemask,0,1);
 }
 
